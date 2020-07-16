@@ -1,0 +1,8 @@
+- auto-update for the package, esp for azure-linuxb-boot-agent
+- BLOG:
+-  dev worklow
+-  tweak rust program, rsync, test
+-  update rev, tofu, tofu remote
+-  build image
+-  ./result/bin/test
+-  done, full e2e test, 2 minutes

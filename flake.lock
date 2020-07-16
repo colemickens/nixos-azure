@@ -1,0 +1,28 @@
+{
+  "nodes": {
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1595229878,
+        "narHash": "sha256-rkG5sU6n1S5chHiJ14GJ8cgD8cUGJtFV1Pj5bNg3wUw=",
+        "ref": "cmpkgs",
+        "rev": "a8546a078df91b2fa3a37395698a7224e35408bb",
+        "revCount": 235355,
+        "type": "git",
+        "url": "file:///home/cole/code/nixpkgs/cmpkgs"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
