@@ -1,6 +1,19 @@
 # flake-azure
 *nix-powered Azure tools and NixOS images*
 
+
+
+
+
+
+
+
+
+AZLBA doesnt persist hostname
+
+
+
+
 ## overview
 [![builds.sr.ht status](https://builds.sr.ht/~colemickens/flake-azure.svg)](https://builds.sr.ht/~colemickens/flake-azure?)
 
