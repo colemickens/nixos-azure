@@ -1,12 +1,13 @@
-{ pkgs, modulesPath, ... }:
+{ pkgs, modulesPath, inputs, ... }:
 
 let username = "azurenixosuser";
 in
 {
   imports = [
+    inputs.self.modules.azure-image
     "${modulesPath}/profiles/headless.nix"
   ];
-
+  
   virtualisation.azure = {
     integration = {
       enable = true;
@@ -14,10 +15,7 @@ in
       # createUsers = true; # default
       # seedEntropy = true; # default
     };
-    image = { diskSize = 1500; };
-    scripts = {
-      enable = true;
-    };
+    image = { diskSize = 50000; };
   };
 
   documentation.enable = false;
@@ -35,7 +33,7 @@ in
     hashedPassword = "$6$k.vT0coFt3$BbZN9jqp6Yw75v9H/wgFs9MZfd5Ycsfthzt3Jdw8G93YhaiFjkmpY5vCvJ.HYtw0PZOye6N9tBjNS698tM3i/1";
     extraGroups = [ "wheel" ];
   };
-  nix.trustedUsers = [ username ];
+  nix.trustedUsers = [ "root" username ];
 
   system.stateVersion = "20.03";
   boot.kernelPackages = pkgs.linuxPackages_latest;

@@ -1,6 +1,23 @@
 # flake-azure
 *nix-powered Azure tools and NixOS images*
 
+**Test Suites**
+|--|--|
+| Test | Status |
+| Official Golden Images (static, built for NixOps) | [test badge] |
+| Official Golden Images (Custom Nix Metadata) | [test badge] |
+| Official Golden Images (Cached Generation) | [test badge] |
+| Golden Images (static custom Nix) | [test badge] |
+
+
+**Current Status**
+* Status: `EXPERIMENTAL`
+* There are no officially support images
+
+
+[test badge for golden image w/ metadata support (cached generation)]
+
+**curious?** Come chat in #nixos-azure:matrix.org or #nixos-azure on Freenode.
 
 
 
@@ -8,10 +25,45 @@
 
 
 
+- AZLBA doesnt persist hostname
+- release images
+- build release images into nixos-homepage
+- propose renaming this to "nixos-azure" and "nixos-azure-demos"
 
-AZLBA doesnt persist hostname
+
+## public images
+
+Azure has no concept equivalent to Amazon's public AMIs. Well, they do, put the 
+process is considerably more burdensome and requires passing a test that requires
+a Windows machine and unspecified requirements. Given the custom boot agent in use,
+it's unlikely we would pass these tests.
+
+At best, we could host a publicly-readable blob in every region, but there's still
+nothing that prevents someone from pulling the image cross-region and incurring large
+storage costs.
+
+Options:
+* managed disk - can't make it public
+
+FINALLY, almost all of the options have some hole that leave them vulnerable to
+an attacker who constantly downloads the image, or replicates it cross-region.
+
+If we use Azure Storage firewalls, we can create a storage account that is only
+accessible from Azure (could still abuse frm VM?) and see if that works
+
+## all-things-images
+
+### image creation
 
 
+### image upload
+
+
+### image usage
+
+If you would like to use an image without building it: please see this service:
+
+(information on why this service is needed is also available on that page)
 
 
 ## overview

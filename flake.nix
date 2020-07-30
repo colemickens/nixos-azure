@@ -1,5 +1,5 @@
 {
-  description = "azure";
+  description = "nixos-azure";
 
   inputs = {
     nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
@@ -26,13 +26,7 @@
         #(pkgsFor pkgs_ system).lib.nixosSystem {
         pkgs_.lib.nixosSystem {
           inherit system;
-          modules = [
-            ({config, ...}: {
-              config.nixpkgs.overlays = [ overlay ];
-            })
-          ] ++ (import ./modules/default.nix) ++ [
-          (./. + "/${thing}")]
-          ;
+          modules = [(./. + "/${thing}")];
           specialArgs.inputs = inputs;
         };
     in
@@ -43,7 +37,7 @@
         in
           nixpkgs_.mkShell {
             nativeBuildInputs = with nixpkgs_; [
-              nixFlakes
+              nixFlakes zstd
               bash cacert cachix
               curl git jq mercurial
               nix-build-uncached
@@ -51,6 +45,7 @@
 
               #azure-cli
               azure-storage-azcopy
+              blobxfer
             ];
           }
       );
@@ -63,12 +58,10 @@
           x = name: (mkSystem system inputs.nixpkgs name).config.system.build;
         in {
           basic = x "examples/basic";
-          k3s = x "examples/k3s";
         }
       );
 
-      #   overlay = final: prev:
-      #     import ./pkgs/default.nix final prev;
+      modules = import ./modules;
 
       packages = forAllSystems (system:
         (pkgsFor inputs.nixpkgs system true).

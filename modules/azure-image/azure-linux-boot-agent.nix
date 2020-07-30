@@ -19,6 +19,18 @@ in
       default = "info";
       description = "The RUST_LOG level to use for AZLBA.";
     };
+    metadataMode = mkOption {
+      type = pkgs.types.enum [ "apply" "stash" "noop" ];
+      defaultValue = "apply";
+    };
+    createUsers = mkOption {
+      type = pkgs.types.bool;
+      defaultValue = true;
+    };
+    seedEntropy = mkOption {
+      type = pkgs.types.bool;
+      defaultValue = true;
+    };
     #agentPackage = mkOption {
     #  default = pkgs.callPackage ../../packages/azure-linux-boot-agent {};
     #  description = "The package to use for AZLBA.";

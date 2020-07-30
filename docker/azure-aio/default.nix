@@ -13,6 +13,7 @@ let
       azure-cli
       azure-storage-azcopy
       azure-linux-boot-agent
+      blobxfer
     ];
 
     config = {

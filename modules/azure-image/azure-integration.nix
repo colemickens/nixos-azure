@@ -6,7 +6,21 @@ let
 in
 {
   options = {
-    virtualisation.azure.integration.enable = mkEnableOption "AZLBA";
+    virtualisation.azure.integration = {
+      enable = mkEnableOption "AZLBA";
+      metadataMode = mkOption {
+        type = pkgs.types.enum [ "apply" "stash" "noop" ];
+        defaultValue = "apply";
+      };
+      createUsers = mkOption {
+        type = pkgs.types.bool;
+        defaultValue = true;
+      };
+      seedEntropy = mkOption {
+        type = pkgs.types.bool;
+        defaultValue = true;
+      };
+    };
   };
 
   config = mkIf cfg.enable {
@@ -14,6 +28,8 @@ in
       enable = true;
       logLevel = "trace";
     };
+
+    nix.package = pkgs.nixUnstable;
 
     # TODO: link to where this is documented
     boot.kernelParams = [
