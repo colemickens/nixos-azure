@@ -2,13 +2,12 @@
   "nodes": {
     "nixpkgs": {
       "locked": {
-        "lastModified": 1595996365,
-        "narHash": "sha256-sV8N2dttoQRtEyUfjDD1+9w3Jv+Dc3CQ2Twps71EElE=",
-        "ref": "cmpkgs",
-        "rev": "d3ff247475f50829a87bf248261ad5462cf07936",
-        "revCount": 236334,
-        "type": "git",
-        "url": "file:///home/cole/code/nixpkgs/cmpkgs"
+        "lastModified": 1597057899,
+        "narHash": "sha256-U144beTNlMdersGcr49IGU2YP1HjeS3pT3+FbOXN7r8=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "32b46dd897ab2143a609988a04d87452f0bbef59",
+        "type": "github"
       },
       "original": {
         "owner": "nixos",

@@ -28,6 +28,7 @@ buildPythonApplication rec {
 
   postPatch = ''
     sed -i 's/requests~=2.22.0/requests~=2.23.0/g' setup.py
+    sed -i 's/cryptography~=2.8/cryptography~=3.0/g' setup.py
   '';
 
   meta = {
