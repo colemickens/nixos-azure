@@ -25,6 +25,10 @@ function runtest() {
   location="westus2"
   size="Standard_D2s_v3"
 
+  customdata="$(mktemp)"
+  echo "" >>"${customdata}"
+  echo "" >>"${customdata}"
+
   az group create -n "${name}" -l "${location}"
 
   az vm create \
@@ -32,6 +36,7 @@ function runtest() {
     --resource-group "${name}" \
     --size "${size}" \
     --image "${image_id}" \
+    --customdata "${customdata}" \
     --admin-username "${username}" \
     --location "${location}" \
     --ssh-key-values "${sshpubkey}" \
@@ -50,3 +55,5 @@ function runtest() {
 }
 
 time runtest
+
+# reorganize so each image can have multiple tests run with it before its deleted

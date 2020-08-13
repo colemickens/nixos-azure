@@ -1,0 +1,19 @@
+image: nixos/unstable
+sources:
+  - git@github.com:colemickens/nixcfg
+secrets:
+  - df3e056f-2931-4a93-86db-e40c2fa6098d # cachix.dhall
+  - bd070f2a-01d1-4b7b-9795-036deb06912c # id_ed25519
+  - 3396ef98-8bbc-4602-8b6e-2a6c2fcf4d01 # srht-builder.key (pgp)
+tasks:
+  - update: |
+      cd nixcfg
+      nix-shell --pure --command "./.ci/prep.sh"
+  - examples-basic: |
+      cd nixcfg
+      nix-shell --pure --command "(cd ./examples/basic; ./validate.sh)"
+  # - examples-customdata-generation: |
+  #     cd nixcfg
+  #     nix-shell --pure --command "(cd ./examples/basic; ./validate.sh)"
+
+# TODO: how can we push intermediate results ?

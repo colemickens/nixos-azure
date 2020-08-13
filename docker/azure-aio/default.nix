@@ -14,6 +14,8 @@ let
       azure-storage-azcopy
       azure-linux-boot-agent
       blobxfer
+
+      nix # let's include this so we can do full e2e examples in this container
     ];
 
     config = {

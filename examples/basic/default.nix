@@ -33,7 +33,7 @@ in
     hashedPassword = "$6$k.vT0coFt3$BbZN9jqp6Yw75v9H/wgFs9MZfd5Ycsfthzt3Jdw8G93YhaiFjkmpY5vCvJ.HYtw0PZOye6N9tBjNS698tM3i/1";
     extraGroups = [ "wheel" ];
   };
-  nix.trustedUsers = [ "root" username ];
+  nix.trustedUsers = [ "root" username "@wheel" ];
 
   system.stateVersion = "20.03";
   boot.kernelPackages = pkgs.linuxPackages_latest;

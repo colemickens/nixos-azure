@@ -13,7 +13,7 @@ AZURE_GROUP="${AZURE_GROUP:-"test${RANDOM}${RANDOM}"}"
 
 image_group="${AZURE_GROUP}"
 image_location="${AZURE_LOCATION:-"westus2"}"
-image_strg_acct="${AZURE_GROUP}"
+image_strg_acct="${AZURE_GROUP//-}"
 image_gallery_name="${AZURE_GROUP}"
 
 image_vhd="$(readlink -f ${out}/disk.vhd.zstd)"
