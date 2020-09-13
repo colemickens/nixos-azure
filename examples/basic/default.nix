@@ -4,10 +4,10 @@ let username = "azurenixosuser";
 in
 {
   imports = [
-    inputs.self.modules.azure-image
+    inputs.self.nixosModules.azure-image
     "${modulesPath}/profiles/headless.nix"
   ];
-  
+
   virtualisation.azure = {
     integration = {
       enable = true;

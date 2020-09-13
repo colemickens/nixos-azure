@@ -3,9 +3,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 set -euo pipefail
 set -x
 
-drv="${1}"
-out="$(mktemp -u)"
-nix --experimental-features 'nix-command flakes' build "${DIR}/../${drv}" --out-link "${out}"
+out="${1}"
+
 function cleanup () { rm -rf "${out}"; }
 trap cleanup EXIT
 
@@ -32,7 +31,7 @@ function check_login() {
   if ! az account get-access-token &>/dev/null; then
     az login --use-device-code
   fi
-    
+
   az provider register --namespace Microsoft.Storage
   az provider register --namespace Microsoft.Network
   az provider register --namespace Microsoft.Compute
@@ -61,7 +60,7 @@ function upload_image() {
     --full-uri -o tsv)"
 
   zstdcat "${image_vhd}" \
-    | blobxfer upload \
+    | time blobxfer upload \
       --storage-url "${sasurl}" \
       --local-path -
 

@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
+    flake-utils = { url = "github:numtide/flake-utils"; }; # TODO: adopt this
   };
 
   outputs = inputs:
@@ -61,7 +62,7 @@
         }
       );
 
-      modules = import ./modules;
+      nixosModules = import ./modules;
 
       packages = forAllSystems (system:
         (pkgsFor inputs.nixpkgs system true).

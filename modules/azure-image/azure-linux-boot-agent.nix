@@ -21,15 +21,15 @@ in
     };
     metadataMode = mkOption {
       type = pkgs.types.enum [ "apply" "stash" "noop" ];
-      defaultValue = "apply";
+      default = "apply";
     };
     createUsers = mkOption {
       type = pkgs.types.bool;
-      defaultValue = true;
+      default = true;
     };
     seedEntropy = mkOption {
       type = pkgs.types.bool;
-      defaultValue = true;
+      default = true;
     };
     #agentPackage = mkOption {
     #  default = pkgs.callPackage ../../packages/azure-linux-boot-agent {};

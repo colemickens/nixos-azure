@@ -10,15 +10,15 @@ in
       enable = mkEnableOption "AZLBA";
       metadataMode = mkOption {
         type = pkgs.types.enum [ "apply" "stash" "noop" ];
-        defaultValue = "apply";
+        default = "apply";
       };
       createUsers = mkOption {
         type = pkgs.types.bool;
-        defaultValue = true;
+        default = true;
       };
       seedEntropy = mkOption {
         type = pkgs.types.bool;
-        defaultValue = true;
+        default = true;
       };
     };
   };
@@ -28,8 +28,6 @@ in
       enable = true;
       logLevel = "trace";
     };
-
-    nix.package = pkgs.nixUnstable;
 
     # TODO: link to where this is documented
     boot.kernelParams = [
