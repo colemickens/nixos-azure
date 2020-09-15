@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "cmpkgs": {
+      "locked": {
+        "lastModified": 1599802301,
+        "narHash": "sha256-nfGKQ/MTRYHx1dhFuo3zn3UjZ5opjyxao/Yc05lihFM=",
+        "owner": "colemickens",
+        "repo": "nixpkgs",
+        "rev": "895cd45413f6214012a67ff7fd1b539beb8dfa25",
+        "type": "github"
+      },
+      "original": {
+        "owner": "colemickens",
+        "ref": "cmpkgs",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "flake-utils": {
       "locked": {
         "lastModified": 1597053966,
@@ -33,6 +49,7 @@
     },
     "root": {
       "inputs": {
+        "cmpkgs": "cmpkgs",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs"
       }

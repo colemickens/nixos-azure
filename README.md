@@ -1,4 +1,4 @@
-# flake-azure
+# nixos-azure
 *nix-powered Azure tools and NixOS images*
 
 **Test Suites**

@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
+    cmpkgs = { url = "github:colemickens/nixpkgs/cmpkgs"; };
     flake-utils = { url = "github:numtide/flake-utils"; }; # TODO: adopt this
   };
 
@@ -42,7 +43,9 @@
               bash cacert cachix
               curl git jq mercurial
               nix-build-uncached
-              nix-prefetch openssh ripgrep
+              openssh ripgrep
+              #nix-prefetch
+              inputs.cmpkgs.legacyPackages.nix-prefetch
 
               #azure-cli
               azure-storage-azcopy

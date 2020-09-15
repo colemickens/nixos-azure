@@ -1,7 +1,7 @@
 {
   repo_git = "https://github.com/Azure/azure-storage-azcopy";
   branch = "master";
-  rev = "be0e7b1665f7bb2171792f5e290ae8aed97236c6";
-  sha256 = "0bygbg1k6926ri3988wbz0b1vv6wamk799mn5nkjf0xa6gjfqqsr";
-  vendorSha256 = "10bpzf8f7ibx1wzd0nzh5q1ynwfjr4n1gjygq4zqqxg51ganqj82";
+  rev = "2c30af330b681d3a1f31db32e11245eafce9c5c3";
+  sha256 = "sha256-zoJoHO4B0lLnpvSxzne63wqmZcpRwEzkSQW41+iy8kc=";
+  vendorSha256 = "sha256-80jlyYKyNjjHw2XVeERXEPmsO8CbthL0JTQG2MSaXYM=";
 }

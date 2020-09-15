@@ -1,43 +1,55 @@
 #!/usr/bin/env bash
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 set -euo pipefail
 set -x
 
-out="${1}"
-
-function cleanup () { rm -rf "${out}"; }
-trap cleanup EXIT
-
-AZURE_GROUP="${AZURE_GROUP:-"test${RANDOM}${RANDOM}"}"
-
-image_group="${AZURE_GROUP}"
-image_location="${AZURE_LOCATION:-"westus2"}"
-image_strg_acct="${AZURE_GROUP//-}"
-image_gallery_name="${AZURE_GROUP}"
-
-image_vhd="$(readlink -f ${out}/disk.vhd.zstd)"
-image_filename="$(basename $(readlink -f ${image_vhd}) ".zstd")"
-image_definition_name="$(cat ${out}/name)"
-image_definition_publisher="$(cat ${out}/publisher)"
-image_definition_offer="$(cat ${out}/offer)"
-image_definition_sku="$(cat ${out}/sku)"
-image_definition_version="$(basename ${image_filename} ".vhd")"
-image_target_regions=("westus2=2")
-hyper_v_generation="V2"
+AZURE_GROUP="${AZURE_GROUP:="defaultaz1"}"
 
 function az() { time command az "${@}"; }
 
-function check_login() {
-  if ! az account get-access-token &>/dev/null; then
-    az login --use-device-code
-  fi
+function boot() {
+  workdir="$(mktemp -d)"
+  image_id="${1}"
 
-  az provider register --namespace Microsoft.Storage
-  az provider register --namespace Microsoft.Network
-  az provider register --namespace Microsoft.Compute
+  ssh-keygen -t rsa -N "" -f "${workdir}/id_rsa"
+  ssh-keygen -y -f "${workdir}/id_rsa" > "${workdir}/id_rsa.pub"
+  sshpubkey="$(cat "${workdir}/id_rsa.pub")"
+
+  deploy="${AZURE_GROUP}"
+  username="azureuser"
+  location="westus2"
+  size="Standard_D2s_v3"
+
+  az group create -n "${deploy}" -l "${location}"
+
+  az vm create \
+    --name "${deploy}" \
+    --resource-group "${deploy}" \
+    --size "${size}" \
+    --image "${image_id}" \
+    --admin-username "${username}" \
+    --location "${location}" \
+    --ssh-key-values "${sshpubkey}" \
+    --ephemeral-os-disk true
 }
 
-function upload_image() {
+function upload() {
+  builddir="${1}"
+
+  image_group="${AZURE_GROUP}"
+  image_location="${AZURE_LOCATION:-"westus2"}"
+  image_strg_acct="${AZURE_GROUP//-}"
+  #image_gallery_name="${AZURE_GROUP}"
+
+  image_vhd="$(readlink -f ${builddir}/disk.vhd.zstd)"
+  image_filename="$(basename $(readlink -f ${image_vhd}) ".zstd")"
+  image_definition_name="$(cat ${builddir}/name)"
+  image_definition_publisher="$(cat ${builddir}/publisher)"
+  image_definition_offer="$(cat ${builddir}/offer)"
+  image_definition_sku="$(cat ${builddir}/sku)"
+  image_definition_version="$(basename ${image_filename} ".vhd")"
+  image_target_regions=("westus2=2")
+  hyper_v_generation="V2"
+  
   if ! az group show -n "${image_group}" &>/dev/null; then
     az group create --name "${image_group}" --location "${image_location}"  &>/dev/stderr
   fi
@@ -85,5 +97,5 @@ function upload_image() {
   fi
 }
 
-check_login
-time upload_image "${@}"
+cmd="${1}"; shift
+time "${cmd}" "${@}"
