@@ -7,7 +7,7 @@
 
 * In-Progress
 * Working
-* Unfunded (help change that: https://reproducible.dev/donate https://r10e.dev/donate)
+* Unfunded
 
 ## Demo
 
