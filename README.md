@@ -51,12 +51,11 @@ an attacker who constantly downloads the image, or replicates it cross-region.
 
 ## compared to nixpkgs/old versions
 1. Fixes sudo/wheel/nopasswd
-2. (maybe) compress the image zstdcat it on the way out
-     this is because we want to pre-size the disk because it's slow to live-resize
-     the disk later
+2. Stores the image with ZSTD, decompresses on the fly during upload (and the upload
+   skips the empty sections). This was... stupidly much harder than it should've been, because, Azure.
 3. Slim the image down (so far ~2.5GB -> 600MB)
 4. An automated validation test! (nothing running it yet, though)
-5. Gen2 VMs + UEFI Boot only
+5. Supports Gen2 VMs (only, though Gen1 support is probably easy to get back if needed for Azure Disk Encryption)
 
 ## considerations
 1. Don't over-minimize your disk image.
