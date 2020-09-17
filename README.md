@@ -1,123 +1,82 @@
 # nixos-azure
 *nix-powered Azure tools and NixOS images*
 
-**Test Suites**
-|--|--|
-| Test | Status |
-| Official Golden Images (static, built for NixOps) | [test badge] |
-| Official Golden Images (Custom Nix Metadata) | [test badge] |
-| Official Golden Images (Cached Generation) | [test badge] |
-| Golden Images (static custom Nix) | [test badge] |
-
-
-**Current Status**
-* Status: `EXPERIMENTAL`
-* There are no officially support images
-
-
-[test badge for golden image w/ metadata support (cached generation)]
-
 **curious?** Come chat in #nixos-azure:matrix.org or #nixos-azure on Freenode.
 
+## Status
 
+* In-Progress
+* Working
+* Unfunded (help change that: https://reproducible.dev/donate https://r10e.dev/donate)
 
+## Demo
 
+```bash
+export AZURE_GROUP="defaultaz1"
 
+# build the VHD
+nix build "../..#hosts.azdev" --out-link /tmp/azdev
 
+# upload the VHD
+img_id="$(set -euo pipefail; nix shell "github:colemickens/nixos-azure" --command azutil upload /tmp/azdev)"
 
-- AZLBA doesnt persist hostname
-- release images
-- build release images into nixos-homepage
-- propose renaming this to "nixos-azure" and "nixos-azure-demos"
-
+# boot a VM
+nix shell "github:colemickens/nixos-azure" --command azutil boot "${img_id}"
+```
 
 ## public images
 
-Azure has no concept equivalent to Amazon's public AMIs. Well, they do, put the 
-process is considerably more burdensome and requires passing a test that requires
-a Windows machine and unspecified requirements. Given the custom boot agent in use,
-it's unlikely we would pass these tests.
+Azure has no direct equivalent to Amazon's public AMIs.
 
 At best, we could host a publicly-readable blob in every region, but there's still
 nothing that prevents someone from pulling the image cross-region and incurring large
 storage costs.
 
-Options:
-* managed disk - can't make it public
-
 FINALLY, almost all of the options have some hole that leave them vulnerable to
 an attacker who constantly downloads the image, or replicates it cross-region.
 
-If we use Azure Storage firewalls, we can create a storage account that is only
-accessible from Azure (could still abuse frm VM?) and see if that works
-
-## all-things-images
-
-### image creation
-
-
-### image upload
-
-
-### image usage
-
-If you would like to use an image without building it: please see this service:
-
-(information on why this service is needed is also available on that page)
-
-
-## overview
-[![builds.sr.ht status](https://builds.sr.ht/~colemickens/flake-azure.svg)](https://builds.sr.ht/~colemickens/flake-azure?)
-
-NixOS 20.03 Image: [[ build badges here]]
-NixOS Unstable Image: [[ build badges here]]
-Docker Image: [[ build badge here ]]
-
-## current status
-
-1. report ready = works (aka, your vm won't reboot)
-2. user provisioning + key provisioning works
-3. hyperv entropy seeding is *actually* implement and works
-4. userdata does _not_ work
 
 ## open questions
-1. How to design the azure-config.nix to include this flake's module maybe?
-2.  -- how do downstream users use? Do I need hydra  and a channel for the flake modules?
+1. consume userdata and try to apply as NixOS config?
+   - seems maybe non-trivial
+   - seems like people are going to be equipped to rollout a config anyway after deploy
+2. nixops?
+   - PRO:
+     - some community is there already
+   - CON:
+     - I don't want to write python
+     - I especially don't want to write python+nix that could maybe be generated
+     - seems like considerably more work than I've done so far, even accounting for the agent (this might be
+       less true of someone familiar with python/nixops)
 
 ## compared to nixpkgs/old versions
 1. Fixes sudo/wheel/nopasswd
 2. (maybe) compress the image zstdcat it on the way out
      this is because we want to pre-size the disk because it's slow to live-resize
      the disk later
+3. Slim the image down (so far ~2.5GB -> 600MB)
+4. An automated validation test! (nothing running it yet, though)
+5. Gen2 VMs + UEFI Boot only
 
 ## considerations
 1. Don't over-minimize your disk image.
    Azure IO is slow, expanding the disk is SLOOOOOW on first boot.
    We need to compare runtime of image copy vs resize from VM.
+2. We minimize the disk image with zstd and inflate on the way back out anyway.
 
 ## todo
-1. export the modules for people to consume via the flake
-2. demo repo showing how someone would instantly start using this in a new flakes-powered project
-3. script out the e2e tests, trigger them on builds.sr.ht
-4. Does nix os ecosystem have hardening suggestions?
+1. check if udev rules are working
+2. script out the e2e tests, trigger them on builds.sr.ht
+3. more tests
 
 ## goals
 1. Get Azure out of nixpkgs
 2. Iterate on `azure-linux-boot-agent` as an alternative to `walinuxagent`
 3. Automate some basic sanity tests
-4. Slim the image down (so far ~2.5GB -> 600MB)
-5. Get udev rules working
-
-## side-goals
-1. rewrite nixos-rebuild and systemd-boot-builder.py in Rust to remove 200MB from the 600MB image
-
-## stakes
-1. This will primarily support NixOS.
-2. Gen2 VMs + UEFI Boot only
-3. Password auth is disabled
 
 ## warnings
-1. This repo is **EXPERIMENTAL**.
+1. This repo is **EXPERIMENTAL**, and this is a project I'm doing to scratch and itch and try to fulfill a community
+   need. However, this work is unfunded and thus comes with no real roadmap.
 2. It uses [my non-official agent](https://github.com/colemickens/azure-linux-boot-agent),
 and its behavior (and thus the behavior of these images/modules) is subject
 to change.
@@ -128,20 +87,9 @@ to change.
   * docker image (hub upload script): `.#dockerImages.azure-aio.upload-script`
   * docker image (hub): `docker://colemickens/azure-aio`
 * azure:
-  * Azure image: `<insert url here>`
-  * Azure image: `<insert url here>`
-
-## build log
-1. 2020-07-15: Start `flake-azure`.
-   * Init repo layout.
-   * Copy my `azure-new` from nixpkgs.
-   * Plan features.
-   * Start `azure-linux-boot-agent`.
-   * Four hours later: AZLBA can do basic provisioning (no ssh key support yet)
-2. 2020-07-16: Polish a bit of UX
-   * You can upload/boot VMs with per-image build artifacts
-   * Boot agent is smarter
-   * boot agent sucks butt
+  * azure image: use `github:colemickens/nixos-azure#nixosModules`
+  * Azure image: `result/disk.vhd.zstd`
+  * upload/run scripts `github:colemickens/nixos-azure#azutil [upload|boot]`
 
 ## license
 Contact me if the license is an issue for you.

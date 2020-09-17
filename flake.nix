@@ -16,7 +16,7 @@
       forAllSystems = genAttrs [ "x86_64-linux" "i686-linux" "aarch64-linux" ];
 
       overlay = import ./packages/default.nix;
-      
+
       pkgsFor = pkgs: system: includeOverlay:
         import pkgs {
           inherit system;
@@ -45,7 +45,7 @@
               nix-build-uncached
               openssh ripgrep
               #nix-prefetch
-              inputs.cmpkgs.legacyPackages.nix-prefetch
+              inputs.cmpkgs.legacyPackages.${system}.nix-prefetch
 
               #azure-cli
               azure-storage-azcopy
@@ -72,7 +72,7 @@
           azurePkgs
       );
 
-      container = 
+      container =
         let
           nixpkgs_ = (pkgsFor inputs.nixpkgs  "x86_64-linux" true);
           attrValues = inputs.nixpkgs.lib.attrValues;
