@@ -29,15 +29,18 @@ nix shell "github:colemickens/nixos-azure" --command azutil boot "${img_id}"
 Azure has no direct equivalent to Amazon's public AMIs.
 
 At best, we could host a publicly-readable blob in every region, but there's still
-nothing that prevents someone from pulling the image cross-region and incurring large
-storage costs.
+nothing that prevents someone from pulling the image cross-region and inflicting high storage
+costs.
 
-FINALLY, almost all of the options have some hole that leave them vulnerable to
-an attacker who constantly downloads the image, or replicates it cross-region.
-
+I'm not sure what to do about this, other than maybe offering a service that will replicate
+into a user's subscription on their behalf. Or alternatively look into becoming a Marketplace offer,
+but there's no way I'm doing that without some sort of motivations (read: compensation).
 
 ## open questions
-1. consume userdata and try to apply as NixOS config?
+
+next steps:
+
+1. Enhance the agent in the NixOS image to consume userdata and try to apply as NixOS config?
    - seems maybe non-trivial
    - seems like people are going to be equipped to rollout a config anyway after deploy
 2. nixops?
@@ -50,18 +53,21 @@ an attacker who constantly downloads the image, or replicates it cross-region.
        less true of someone familiar with python/nixops)
 
 ## compared to nixpkgs/old versions
-1. Fixes sudo/wheel/nopasswd
+
+This version of NixOS Azure images has benefits compared to the existing nixpkgs version:
+
+1. Fixes sudo/wheel/nopasswd. (Meaning you can actually evelate to root on a VM created with only an SSH Key and no password.)
 2. Stores the image with ZSTD, decompresses on the fly during upload (and the upload
-   skips the empty sections). This was... stupidly much harder than it should've been, because, Azure.
+   skips the empty sections). This was... stupidly much challenging than it should've been, because, Azure.
 3. Slim the image down (so far ~2.5GB -> 600MB)
 4. An automated validation test! (nothing running it yet, though)
-5. Supports Gen2 VMs (only, though Gen1 support is probably easy to get back if needed for Azure Disk Encryption)
+5. Supports Gen2 HyperV VMs (only, though Gen1 support is probably easy to get back if needed for Azure Disk Encryption)
+6. Uses a custom, Rust-powered Agent, rather than Microsoft's aging, questionable Python agent
 
 ## considerations
 1. Don't over-minimize your disk image.
    Azure IO is slow, expanding the disk is SLOOOOOW on first boot.
    We need to compare runtime of image copy vs resize from VM.
-2. We minimize the disk image with zstd and inflate on the way back out anyway.
 
 ## todo
 1. check if udev rules are working
@@ -86,8 +92,9 @@ to change.
   * docker image (hub upload script): `.#dockerImages.azure-aio.upload-script`
   * docker image (hub): `docker://colemickens/azure-aio`
 * azure:
-  * azure image: use `github:colemickens/nixos-azure#nixosModules`
-  * Azure image: `result/disk.vhd.zstd`
+  * azure image:
+     * add `github:colemickens/nixos-azure#nixosModules`
+     * then build `config.system.build.azureImage` => `result/disk.vhd.zstd`
   * upload/run scripts `github:colemickens/nixos-azure#azutil [upload|boot]`
 
 ## license
