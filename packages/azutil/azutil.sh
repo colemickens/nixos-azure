@@ -29,7 +29,8 @@ function boot() {
     --admin-username "${username}" \
     --location "${location}" \
     --ssh-key-values "${sshpubkey}" \
-    --ephemeral-os-disk true
+    --ephemeral-os-disk true \
+    --storage-sku Premium_LRS
 }
 
 function upload() {
