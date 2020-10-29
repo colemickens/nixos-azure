@@ -100,5 +100,13 @@ function upload() {
   fi
 }
 
+function cache-upload() {
+  echo "get contents of cache currently"
+  echo "check if path doesn't exist"
+  echo "if not, add to queue to upload"
+
+  echo "throw it all at some az client that can upload"
+}
+
 cmd="${1}"; shift
 time "${cmd}" "${@}"
