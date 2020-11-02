@@ -17,7 +17,14 @@ function boot() {
   deploy="${AZURE_GROUP}"
   username="azureuser"
   location="westus2"
-  size="${AZURE_VM_SIZE:-"Standard_D2s_v3"}"
+  #size="${AZURE_VM_SIZE:-"Standard_D64s_v3"}"
+  #size="D64a_v4"
+  #size="D64as_v4"
+  #size="D64d_v4"
+  #size="D64ds_v4"
+  #size="D64s_v3"
+  #size="D64s_v4"
+  size="Standard_D96as_v4"
   disksize="${AZURE_VM_OS_DISK_SIZE-"50"}"
 
   az group create -n "${deploy}" -l "${location}"
@@ -31,6 +38,7 @@ function boot() {
     --location "${location}" \
     --ssh-key-values "${sshpubkey}" \
     --os-disk-size-gb "${disksize}" \
+    --public-ip-address-dns-name "${deploy}" \
     --ephemeral-os-disk true
     # --storage-sku Premium_LRS # n/a with ephemeral OS disk
 }

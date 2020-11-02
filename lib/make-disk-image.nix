@@ -1,3 +1,10 @@
+
+
+# TODO
+# https://github.com/NixOS/nixos-org-configurations/blob/master/macs/host/clover.qcow2.nix
+
+
+
 { pkgs
 , lib
 
