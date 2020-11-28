@@ -27,8 +27,10 @@ buildPythonApplication rec {
   checkInputs = with pythonPackages; [ pytest ];
 
   postPatch = ''
-    sed -i 's/requests~=2.22.0/requests~=2.23.0/g' setup.py
+    sed -i 's/requests~=2.22.0/requests~=2.25.0/g' setup.py
     sed -i 's/cryptography~=2.8/cryptography~=3.0/g' setup.py
+    sed -i 's/cryptography~=2.8/cryptography~=3.0/g' setup.py
+    sed -i 's/azure-storage-blob~=2.1.0/azure-storage-blob~=12.5.0/g' setup.py
   '';
 
   meta = {

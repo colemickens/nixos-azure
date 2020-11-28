@@ -4,7 +4,6 @@
   inputs = {
     nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
     cmpkgs = { url = "github:colemickens/nixpkgs/cmpkgs"; };
-    flake-utils = { url = "github:numtide/flake-utils"; }; # TODO: adopt this
   };
 
   outputs = inputs:
@@ -49,7 +48,8 @@
 
               #azure-cli
               azure-storage-azcopy
-              blobxfer
+              #blobxfer
+              blobporter
             ];
           }
       );
