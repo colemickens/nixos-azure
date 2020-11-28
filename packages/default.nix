@@ -8,6 +8,7 @@ azurePkgs = rec {
   blobxfer = pkgs.python3Packages.callPackage ./blobxfer {
     bitstring_ = pkgs.python3Packages.callPackage ./bitstring {};
   };
+  blobporter = pkgs.callPackage ./blobporter {};
 };
 in
   azurePkgs // { inherit azurePkgs; }

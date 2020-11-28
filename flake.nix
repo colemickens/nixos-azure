@@ -49,7 +49,7 @@
               #azure-cli
               azure-storage-azcopy
               #blobxfer
-              blobporter
+              #blobporter
             ];
           }
       );
