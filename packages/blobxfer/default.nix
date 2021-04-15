@@ -1,12 +1,12 @@
 { lib, pythonPackages, buildPythonApplication, fetchFromGitHub, bitstring_, ... }:
 
-buildPythonApplication rec {    
-  pname = "blobxfer";    
+buildPythonApplication rec {
+  pname = "blobxfer";
   version = "1.9.4";
     
-  src = fetchFromGitHub {    
+  src = fetchFromGitHub {
     owner = "Azure";
-    repo = "blobxfer";    
+    repo = "blobxfer";
     rev = version;
     sha256 = "1s25hba73h82a2bk29bxa1nabd7zw25hm8m38ziqxlbv1x6i8gkf";
   };
@@ -27,14 +27,11 @@ buildPythonApplication rec {
   checkInputs = with pythonPackages; [ pytest ];
 
   postPatch = ''
-    sed -i 's/requests~=2.22.0/requests~=2.25.0/g' setup.py
-    sed -i 's/cryptography~=2.8/cryptography~=3.0/g' setup.py
-    sed -i 's/cryptography~=2.8/cryptography~=3.0/g' setup.py
-    sed -i 's/azure-storage-blob~=2.1.0/azure-storage-blob~=12.5.0/g' setup.py
+    sed -i 's/requests~=2.22.0/requests~=2.23.0/g' setup.py
   '';
 
   meta = {
-    description = " Azure Storage transfer tool and data movement library ";
+    description = "Azure Storage transfer tool and data movement library";
     homepage = "https://github.com/Azure/blobxfer";
     license = lib.licenses.mit;
     maintainers = with lib.maintainers; [ colemickens ];
