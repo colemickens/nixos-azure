@@ -3,62 +3,60 @@ set -euo pipefail
 set -x
 
 function az() { time command __AZ__ "${@}"; }
-
 BLOBXFER="__BLOBXFER__"
 
 builddir="${1}"
-
-image_group="${IMAGE_GROUP}"
-image_location="${AZURE_LOCATION:-"westus2"}"
-image_strg_acct="${IMAGE_GROUP//-}"
-
 image_vhd="$(readlink -f ${builddir}/disk.vhd.zstd)"
-#image_filename="$(basename $(readlink -f ${image_vhd}) ".zstd")"
-image_filename="${IMAGE_NAME}"
-hyper_v_generation="V2"
 
-if ! az group show -n "${IMAGE_GROUP}" &>/dev/null; then
-  az group create --name "${IMAGE_GROUP}" --location "${image_location}"  &>/dev/stderr
+if ! az group show -n "${AZURE_IMAGE_GROUP}" &>/dev/null; then
+  az group create --name "${AZURE_IMAGE_GROUP}" --location "${AZURE_LOCATION}"  &>/dev/stderr
 fi
 
-if ! az storage account show --name "${image_strg_acct}" &>/dev/null; then
-  az storage account create -n "${image_strg_acct}" -g "${IMAGE_GROUP}" -l "westus2" --sku "Standard_LRS"  &>/dev/stderr
+if ! az storage account show --name "${AZURE_IMAGE_GROUP}" &>/dev/null; then
+  az storage account create -n "${AZURE_IMAGE_GROUP}" -g "${AZURE_IMAGE_GROUP}" -l "westus2" --sku "Standard_LRS"  &>/dev/stderr
 fi
 
-if ! az storage container show --account-name "${image_strg_acct}" --name "vhd" &>/dev/null; then
-  #az storage container create --verbose --auth-mode login --account-name "${image_strg_acct}" --name "vhd" &>/dev/stderr
-  az storage container create --verbose --account-name "${image_strg_acct}" --name "vhd" &>/dev/stderr
+if ! az storage container show --account-name "${AZURE_IMAGE_GROUP}" --name "vhd" &>/dev/null; then
+  az storage container create --verbose --account-name "${AZURE_IMAGE_GROUP}" --name "vhd" &>/dev/stderr
 fi
 
-sasurl="$(az storage blob generate-sas \
-  --permissions acdrw \
-  --expiry "$(date -u -d "1 hour" '+%Y-%m-%dT%H:%MZ')" \
-  --account-name "${image_strg_acct}" \
-  --container-name "vhd" \
-  --name "${image_filename}"\
-  --full-uri -o tsv)"
+if ! az storage blob show --account-name "${AZURE_IMAGE_GROUP}" --container-name "vhd" --name "${AZURE_IMAGE_NAME}" &>/dev/null; then
+  sasurl="$(az storage blob generate-sas \
+    --permissions acdrw \
+    --expiry "$(date -u -d "1 hour" '+%Y-%m-%dT%H:%MZ')" \
+    --account-name "${AZURE_IMAGE_GROUP}" \
+    --container-name "vhd" \
+    --name "${AZURE_IMAGE_NAME}"\
+    --full-uri -o tsv)"
 
-zstdcat "${image_vhd}" \
-  | time "${BLOBXFER}" upload \
-    --storage-url "${sasurl}" \
-    --local-path -
+  zstdcat "${image_vhd}" \
+    | time "${BLOBXFER}" upload \
+      --storage-url "${sasurl}" \
+      --local-path -
+fi
 
+# get blob url
 bloburl="$(az storage blob url \
-  --account-name "${image_strg_acct}" \
+  --account-name "${AZURE_IMAGE_GROUP}" \
   --container-name "vhd" \
-  --name "${image_filename}" \
+  --name "${AZURE_IMAGE_NAME}" \
   -o tsv)"
 
-if ! az image show -g "${image_group}" -n "${image_filename}" &>/dev/null; then
-  az image create \
-    --resource-group "${image_group}" \
-    --name "${image_filename}" \
+# wait until we've succesfully created the image
+if ! az image show -g "${AZURE_IMAGE_GROUP}" -n "${AZURE_IMAGE_NAME}" &>/dev/null; then
+  until az image create \
+    --resource-group "${AZURE_IMAGE_GROUP}" \
+    --name "${AZURE_IMAGE_NAME}" \
     --source "${bloburl}" \
-    --hyper-v-generation "${hyper_v_generation}" \
-    --os-type "linux" >/dev/null
-
-  az image show --resource-group "${image_group}" \
-    --name "${image_filename}" \
-    -o tsv \
-    --query "[id]"
+    --hyper-v-generation "V2" \
+    --os-type "linux" >/dev/null;
+  do
+    sleep 1
+  done
 fi
+
+# now dump the image id to standard out
+az image show --resource-group "${AZURE_IMAGE_GROUP}" \
+  --name "${AZURE_IMAGE_NAME}" \
+  -o tsv \
+  --query "[id]"
