@@ -47,7 +47,10 @@
 
       overlay = final: prev:
         let p = rec {
-          blobxfer = pkgs_.blobxferpkgs."${prev.system}".python3Packages.callPackage ./packages/blobxfer {
+          # blobxfer = pkgs_.blobxferpkgs."${prev.system}".python3Packages.callPackage ./packages/blobxfer {
+          #   bitstring_ = pkgs_.blobxferpkgs."${prev.system}".python3Packages.callPackage ./packages/bitstring {};
+          # };
+          blobxfer = pkgs_.nixpkgs.${prev.system}.python3Packages.callPackage ./packages/blobxfer {
             bitstring_ = pkgs_.blobxferpkgs."${prev.system}".python3Packages.callPackage ./packages/bitstring {};
           };
           azure-linux-boot-agent = prev.callPackage ./packages/azure-linux-boot-agent {};

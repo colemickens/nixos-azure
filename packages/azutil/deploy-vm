@@ -15,17 +15,17 @@ fi
 
 image_id="$(az image show -g "${AZURE_IMAGE_GROUP}" -n "${AZURE_IMAGE_NAME}" -o tsv --query '[id]')"
 
-az group create -n "${MACHINE_GROUP}" -l "${AZURE_LOCATION}"
+az group create -n "${AZURE_MACHINE_GROUP}" -l "${AZURE_LOCATION}"
 args=(
-  --name "${MACHINE_NAME}"
-  --resource-group "${MACHINE_GROUP}"
+  --name "${AZURE_MACHINE_NAME}"
+  --resource-group "${AZURE_MACHINE_GROUP}"
   --size "${AZURE_VM_SIZE}"
   --image "${image_id}"
   --attach-data-disks "${DATA_DISK_ID}"
   --admin-username "azureuser"
   --location "${AZURE_LOCATION}"
   --ssh-key-values "${AZURE_SSH}"
-  --public-ip-address-dns-name "${MACHINE_NAME}"
+  --public-ip-address-dns-name "${AZURE_MACHINE_NAME}"
 )
 
 [[ "${AZURE_PUBLIC_IP:-""}" != "" ]]       && args=("${args[@]}" "--public-ip-address" "${AZURE_PUBLIC_IP}")
@@ -37,3 +37,4 @@ args=(
 [[ "${AZURE_EPHEMERAL_DISK:-""}" == "true" ]] && args=("${args[@]}" "--ephemeral-os-disk")
 
 az vm create "${args[@]}"
+

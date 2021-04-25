@@ -2,13 +2,13 @@
 
 buildPythonApplication rec {
   pname = "blobxfer";
-  version = "1.9.4";
-    
+  version = "1.10.0";
+
   src = fetchFromGitHub {
     owner = "Azure";
     repo = "blobxfer";
     rev = version;
-    sha256 = "1s25hba73h82a2bk29bxa1nabd7zw25hm8m38ziqxlbv1x6i8gkf";
+    sha256 = "sha256-7wYwwZrdGFS87BULz5+6wJiBRhW8azCE3B0Ve1812g4=";
   };
 
   propagatedBuildInputs = with pythonPackages; [
@@ -27,7 +27,7 @@ buildPythonApplication rec {
   checkInputs = with pythonPackages; [ pytest ];
 
   postPatch = ''
-    sed -i 's/requests~=2.22.0/requests~=2.23.0/g' setup.py
+    #sed -i 's/requests~=2.22.0/requests~=2.23.0/g' setup.py
   '';
 
   meta = {
